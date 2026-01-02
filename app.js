@@ -22,7 +22,7 @@ const listingsrouter = require("./routes/listing.js");
 const reviewsrouter = require("./routes/review.js");
 const userrouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/WoderLust";
+
 const dbUrl = process.env.ATLASDB_URL;
 
 main()
@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 const store = new MongoStore({
     mongoUrl:dbUrl,
     crypto: {
-        secret:"mysupersecretcode"
+        secret: process.env.SECRET,
     },
     touchAfter: 24*3600,          // interval in sec between session update
 });
@@ -58,7 +58,7 @@ store.on("error", (err) =>{
 
 const sessionOptions = {
     store,
-    secret: "mysupersecretcode",  //a scret code
+    secret: process.env.SECRET ,  //a scret code
     resave: false,  //required parameters
     saveUninitialized: true ,
     cookie: {        // main use of cookie is to track sessions
@@ -119,7 +119,13 @@ app.use((err,req,res,next) =>{
     
 });
 
-app.listen(8080, () => {
-    console.log("server listening to port 8080");
+// app.listen(8080, () => {
+//     console.log("server listening to port 8080");
+const port = process.env.PORT || 8080;
 
+app.listen(port, () => {
+    console.log(`server listening on port ${port}`);
 });
+
+  
+
